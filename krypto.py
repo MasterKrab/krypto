@@ -1,4 +1,4 @@
-import itertools
+import itertools, re, sys
 
 PLUS = "+"
 MINUS = "-"
@@ -11,8 +11,9 @@ COMBINATIONS = [
     "(n_(n_n))_n",
     "n_(n_(n_n))",
     "(n_n)_(n_n)",
-    "(n_n)_n_n",
 ]
+
+show_all = False
 
 
 def format_answer(expression):
@@ -45,6 +46,18 @@ def compute_all_operations(result, operations=""):
     compute_all_operations(result, operations)
 
 
+def compute_all_combinations(result):
+    all_operations = []
+    compute_all_operations(all_operations)
+
+    for current_operations in all_operations:
+        for combination in COMBINATIONS:
+            for operation in current_operations:
+                combination = combination.replace("_", operation, 1)
+
+            result.add(combination)
+
+
 def format_expression(cards, expression, operations):
 
     for operation in operations:
@@ -56,30 +69,57 @@ def format_expression(cards, expression, operations):
     return expression
 
 
-def search_solution(cards, target):
-    all_operations, solutions = [], []
+def divide(a, b):
+    if b == 0:
+        raise ZeroDivisionError
 
-    compute_all_operations(all_operations)
+    if a % b == 0:
+        return a // b
+
+    raise ValueError("Division is not an integer")
+
+
+def replace_division_expression(expr):
+    def replacement(match):
+        num1 = match.group(1)
+        num2 = match.group(2)
+        return f"divide({num1}, {num2})"
+
+    pattern = r"(\d+)/(\d+)"
+    return re.sub(pattern, replacement, expr)
+
+
+def search_solution(cards, target):
+    all_combinations, solutions = set(), set()
+
+    compute_all_combinations(all_combinations)
 
     cards.sort()
 
     for permuted_cards in itertools.permutations(cards):
-        for current_operations in all_operations:
-            for combination in COMBINATIONS:
-                formatted = format_expression(
-                    permuted_cards, combination, current_operations
-                )
+        for combination in all_combinations:
 
-                try:
-                    if eval(formatted) == target:
-                        return format_answer(formatted)
-                except ZeroDivisionError:
-                    pass
+            for card in permuted_cards:
+                combination = combination.replace("n", str(card), 1)
+
+            try:
+                if eval(replace_division_expression(combination)) == target:
+                    if not show_all:
+                        return [format_answer(combination)]
+
+                    solutions.add(format_answer(combination))
+            except ZeroDivisionError:
+                pass
+            except ValueError:
+                pass
 
     return solutions
 
 
 def main():
+    global show_all
+    show_all = "--all" in sys.argv
+
     cards = [0] * 4
     target = 0
 
@@ -96,7 +136,12 @@ def main():
         print("No solution")
         return
 
-    print(solution + " = " + str(target))
+    if not show_all:
+        print(solution[0] + " = " + str(target))
+        return
+
+    for solution in solution:
+        print(solution + " = " + str(target))
 
 
 if __name__ == "__main__":

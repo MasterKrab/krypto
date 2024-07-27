@@ -25,6 +25,24 @@ You can use Python Interpreter. The used version for this program was `3.12.2`.
 
 And the output is:
 
-```
+```bash
 ((1 + 1) + 1) + 1 = 4
+```
+
+Also you can use the `--all` flag to get all the possible solutions.
+
+```bash
+./krypto --all
+1 1 1 1 4
+```
+
+And the output is:
+
+```bash
+1 + ((1 + 1) + 1) = 4
+(1 + (1 + 1)) + 1 = 4
+((1 + 1) + 1) + 1 = 4
+(1 + 1) + (1 + 1) = 4
+1 + (1 + (1 + 1)) = 4
+(1 + 1) * (1 + 1) = 4
 ```
