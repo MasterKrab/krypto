@@ -14,15 +14,17 @@ Cards: `9 9 10 2 5`, the player must obtain 5 using cards 9, 9, 10 and 2. A solu
 
 ## Build
 
-You can use GNU C++ compiler. The used version for this program was `12.2.1`.
-
-```bash
-g++ -o krypto krypto.cpp
-```
+You can use Python Interpreter. The used version for this program was `3.12.2`.
 
 ## Usage
 
 ```bash
 ./krypto
 1 1 1 1 4
+```
+
+And the output is:
+
+```
+((1 + 1) + 1) + 1 = 4
 ```
